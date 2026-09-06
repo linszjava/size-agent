@@ -1,0 +1,19 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven build output
+target/
+**/target/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+
+# Logs and operating-system files
+*.log
+.DS_Store
+

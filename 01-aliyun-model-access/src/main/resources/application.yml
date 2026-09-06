@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: aliyun-model-access
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: ${AI_MODEL:qwen3.8-max-0902}
+          # Qwen3.8 Max 使用多模态接口，即使请求只包含文本。
+          multi-model: true
+          temperature: 0.7
+      base-url: https://llm-7gno6a71gk4wf1gh.cn-beijing.maas.aliyuncs.com
+
+app:
+  ai:
+    system-prompt: 你是一个严谨的中文 AI 助手。回答应准确、简洁；不知道时明确说明不知道。
+
+server:
+  port: 8888
