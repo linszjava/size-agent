@@ -1,0 +1,27 @@
+{
+  "name": "size-agent-docs",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "format": "prettier --write src tests vite.config.ts tsconfig.json package.json index.html README.md",
+    "format:check": "prettier --check src tests vite.config.ts tsconfig.json package.json index.html README.md"
+  },
+  "dependencies": {
+    "@lucide/vue": "1.41.0",
+    "vue": "3.5.42"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitejs/plugin-vue": "6.0.8",
+    "prettier": "^3.9.6",
+    "typescript": "5.9.3",
+    "vite": "8.2.2",
+    "vitest": "5.0.0",
+    "vue-tsc": "3.3.11"
+  }
+}

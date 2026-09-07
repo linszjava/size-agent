@@ -3,6 +3,7 @@ package com.size.service;
 import cn.hutool.core.util.StrUtil;
 import com.size.exception.ModelCallException;
 import com.size.model.ChatResponseDto;
+import com.size.tools.ChatClientTool;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -15,7 +16,7 @@ public class ChatService {
 
     private final ChatClient chatClient;
 
-    public ChatService(@Qualifier("chatClientAli") ChatClient chatClient) {
+    public ChatService( ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
@@ -36,7 +37,8 @@ public class ChatService {
                 throw new ModelCallException("模型没有返回有效结果",null);
             }
 
-            ChatResponseDto chatResponseDto = toChatResponseDto(chatResponse);
+            System.out.println("===================="+chatResponse);
+            ChatResponseDto chatResponseDto = ChatClientTool.toChatResponseDto(chatResponse);
             return chatResponseDto;
 
             /* 健壮性 */
@@ -51,27 +53,6 @@ public class ChatService {
         }
     }
 
-    private static ChatResponseDto toChatResponseDto(ChatResponse chatResponse) {
-        String content = chatResponse.getResult().getOutput().getText();
-
-        String model = chatResponse.getMetadata().getModel();
-
-        long promptTokens = toLong(chatResponse.getMetadata().getUsage().getPromptTokens());
-
-        long completionTokens = toLong(chatResponse.getMetadata().getUsage().getCompletionTokens());
-        long totalTokens = toLong(chatResponse.getMetadata().getUsage().getTotalTokens());
-
-        String finishReason = chatResponse.getResult().getMetadata().getFinishReason();
-
-
-        ChatResponseDto chatResponseDto = new ChatResponseDto(content,model,promptTokens,
-                completionTokens,totalTokens,finishReason);
-        return chatResponseDto;
-    }
-
-    private static Long toLong(Integer value) {
-        return value == null ? null : value.longValue();
-    }
 
 
 }

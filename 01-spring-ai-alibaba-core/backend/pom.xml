@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>com.size</groupId>
-    <artifactId>aliyun-model-access</artifactId>
+    <artifactId>spring-ai-alibaba-core-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>aliyun-model-access</name>
-    <description>Spring AI Alibaba DashScope 快速启动 第一步 </description>
+    <name>spring-ai-alibaba-core-backend</name>
+    <description>Spring AI Alibaba 核心能力示例后端</description>
 
     <properties>
         <java.version>21</java.version>

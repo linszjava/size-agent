@@ -2,6 +2,7 @@ package com.size.config;
 
 import com.alibaba.cloud.ai.dashscope.agent.DashScopeAgent;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
+import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,25 +33,18 @@ public class ChatClientConfig {
 
     }
 
-    /**
-     * 方式二：直接依赖 Spring AI Alibaba 的 DashScopeChatModel 实现。
-     */
-    @Bean("chatClientAli")
-    public ChatClient dashScopeChatClientAli(DashScopeChatModel model) {
-        return ChatClient.builder(model)
+    @Bean("coreChatClient")
+    public ChatClient coreChatClient(ChatClient.Builder builder) {
+        return builder
                 .defaultSystem(systemPrompt)
+                .defaultOptions(DashScopeChatOptions.builder()
+                        .temperature(0.7)
+                        .maxToken(1000)
+                        .topP(0.8)
+                        .build())
                 .build();
     }
 
-    /**
-     * 方式三：依赖 Spring AI 通用的 ChatModel 接口。
-     * 当前注入的实际实现仍然是 DashScopeChatModel。
-     */
-    @Bean("chatClientGeneral")
-    public ChatClient dashScopeChatClientGeneral(ChatModel model) {
-        return ChatClient.builder(model)
-                .defaultSystem(systemPrompt)
-                .build();
-    }
+
 
 }
