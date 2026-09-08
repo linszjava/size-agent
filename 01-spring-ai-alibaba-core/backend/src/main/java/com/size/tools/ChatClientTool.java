@@ -1,5 +1,6 @@
 package com.size.tools;
 
+import cn.hutool.crypto.digest.DigestUtil;
 import com.size.model.ChatRequest;
 import com.size.model.ChatResponseDto;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -27,5 +28,8 @@ public class ChatClientTool {
     private static Long toLong(Integer value) {
         return value == null ? null : value.longValue();
     }
+
+
+
 
 }

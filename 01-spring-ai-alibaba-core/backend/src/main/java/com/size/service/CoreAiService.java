@@ -6,7 +6,6 @@ import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import com.size.exception.ModelCallException;
 import com.size.model.ChatResponseDto;
 import com.size.model.CoreChatRequest;
-import com.size.model.CoreChatResponse;
 import com.size.tools.ChatClientTool;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.ai.chat.client.ChatClient;

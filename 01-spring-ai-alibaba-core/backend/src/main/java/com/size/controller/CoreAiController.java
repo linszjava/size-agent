@@ -2,7 +2,6 @@ package com.size.controller;
 
 import com.size.model.ChatResponseDto;
 import com.size.model.CoreChatRequest;
-import com.size.model.CoreChatResponse;
 import com.size.service.CoreAiService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;

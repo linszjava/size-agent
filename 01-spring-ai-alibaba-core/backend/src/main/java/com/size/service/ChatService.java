@@ -16,7 +16,8 @@ public class ChatService {
 
     private final ChatClient chatClient;
 
-    public ChatService( ChatClient chatClient) {
+    /* 项目中配置了默认的@Primary  不指名也能使用不会报错 但是建议加上 避免多个Bean使用出现混乱 */
+    public ChatService(@Qualifier("chatClient")  ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
