@@ -1952,3 +1952,211 @@ textarea:disabled {
     gap: 12px;
   }
 }
+
+.memory-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 470px;
+  gap: 48px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.memory-doc {
+  min-width: 0;
+  padding: 36px 0 70px;
+}
+.memory-doc h1 {
+  margin-top: 14px;
+}
+.memory-endpoints {
+  margin: 32px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.memory-endpoints > div {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+}
+.memory-endpoints > div:last-child {
+  border-bottom: 0;
+}
+.memory-endpoints code {
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+.memory-endpoints small {
+  color: var(--muted);
+}
+.method.get,
+.method.delete {
+  background: var(--green-light);
+  color: var(--green);
+}
+.memory-steps {
+  color: #53635a;
+  line-height: 2;
+  padding-left: 22px;
+}
+.memory-console {
+  position: sticky;
+  top: 96px;
+  height: calc(100vh - 120px);
+  min-height: 570px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fbfcfb;
+  box-shadow: 0 14px 45px #1f3b2a0b;
+}
+.memory-identity {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+.memory-identity label {
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: #66756c;
+}
+.memory-identity input {
+  width: 100%;
+  margin-top: 7px;
+  padding: 9px 10px;
+  border: 1px solid #dfe7e2;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.memory-messages {
+  flex: 1;
+  overflow: auto;
+  padding: 20px 18px;
+}
+.memory-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #95a198;
+}
+.memory-empty strong {
+  color: #66756c;
+  font-size: 0.9rem;
+}
+.memory-empty span {
+  font-size: 0.78rem;
+}
+.memory-message {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 9px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+.memory-message > span {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.memory-message.user > span {
+  background: #52645a;
+}
+.memory-message p {
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 4px 10px 10px 10px;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.memory-message.user p {
+  background: var(--green-light);
+  border-color: #d7eade;
+}
+.memory-composer {
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+  background: white;
+}
+.memory-composer textarea {
+  width: 100%;
+  resize: none;
+  border: 1px solid #dfe7e2;
+  border-radius: 8px;
+  padding: 11px;
+}
+.memory-actions {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+.reset-button.labelled {
+  width: auto;
+  min-height: 42px;
+  padding: 11px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.reset-button.danger {
+  color: #b44747;
+}
+.memory-notice {
+  color: var(--green);
+  font-size: 0.78rem;
+  margin: 7px 0 0;
+}
+@media (max-width: 1050px) {
+  .memory-workspace {
+    grid-template-columns: 1fr;
+  }
+  .memory-console {
+    position: static;
+    height: 700px;
+  }
+}
+@media (max-width: 600px) {
+  .memory-identity {
+    grid-template-columns: 1fr;
+  }
+  .memory-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+  .memory-actions > span {
+    display: none;
+  }
+  .memory-actions button {
+    justify-content: center;
+  }
+  .memory-endpoints > div {
+    grid-template-columns: 66px 1fr;
+  }
+  .memory-endpoints small {
+    grid-column: 2;
+  }
+}

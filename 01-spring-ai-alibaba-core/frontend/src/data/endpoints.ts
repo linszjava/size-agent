@@ -9,6 +9,7 @@ export interface Endpoint {
   example: string
   stream?: boolean
   basic?: boolean
+  memory?: boolean
   java: string
 }
 
@@ -74,6 +75,19 @@ export const endpoints: Endpoint[] = [
       '通过 POST 请求获取 text/event-stream 响应。后端将 Flux<String> 持续写入 SSE 事件，调试台会按顺序拼接内容，并支持随时停止接收。',
     example: '请循序渐进地解释 Spring AI 中的流式响应，并给出使用建议。',
     java: 'return chatClient.prompt()\n    .system(systemPrompt)\n    .user(request.message())\n    .options(options)\n    .stream()\n    .content();',
+  },
+  {
+    id: 'memory',
+    title: 'Chat Memory',
+    label: '对话记忆',
+    path: '/api/memory/chat',
+    tag: 'MEMORY',
+    memory: true,
+    description: '让模型记住同一用户、同一会话中的上下文。',
+    detail:
+      '通过 userId 隔离用户，通过 conversationId 标识会话。页面支持普通与流式对话、历史记录查询和会话清空。',
+    example: '我叫小林，请记住我的名字。',
+    java: 'memoryChatClient.prompt()\n    .user(request.message())\n    .advisors(advisor -> advisor.param(\n        ChatMemory.CONVERSATION_ID, memoryKey))\n    .call()\n    .content();',
   },
 ]
 

@@ -1,7 +1,18 @@
 spring:
   application:
     name: spring-ai-alibaba-core-backend
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/size_ai?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${MYSQL_USERNAME:size_ai}
+    password: ${MYSQL_PASSWORD:SizeAi@123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   ai:
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always   # 生产环境 修改为never
+
     dashscope:
       api-key: ${AI_DASHSCOPE_API_KEY}
       chat:

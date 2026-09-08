@@ -170,13 +170,11 @@ describe('HTTP 与流式调用', () => {
   it('处理流内错误，同时保留已接收内容', async () => {
     vi.stubGlobal(
       'fetch',
-      vi
-        .fn()
-        .mockResolvedValue(
-          new Response('data: partial\n\nevent: error\ndata: upstream failed\n\n', {
-            headers: { 'Content-Type': 'text/event-stream' },
-          }),
-        ),
+      vi.fn().mockResolvedValue(
+        new Response('data: partial\n\nevent: error\ndata: upstream failed\n\n', {
+          headers: { 'Content-Type': 'text/event-stream' },
+        }),
+      ),
     )
     const onChunk = vi.fn()
     await expect(callChat({ ...options(), stream: true, onChunk })).rejects.toMatchObject({

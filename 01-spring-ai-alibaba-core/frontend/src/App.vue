@@ -28,6 +28,7 @@ import {
   Zap,
 } from '@lucide/vue'
 import CodeBlock from './components/CodeBlock.vue'
+import MemoryChatPage from './components/MemoryChatPage.vue'
 import { endpoints, parameters, responseFields } from './data/endpoints'
 import { ApiError, buildCurl, buildPayload, callChat } from './lib/api'
 import type { ChatResponse, Draft } from './lib/api'
@@ -59,6 +60,7 @@ const iconFor = (id: string) =>
     'chat-client': Code2,
     messages: MessageSquare,
     stream: Radio,
+    memory: MessageSquare,
   })[id] || Code2
 const drafts = reactive<Record<string, Draft>>(
   Object.fromEntries(
@@ -363,7 +365,7 @@ onBeforeUnmount(() => {
       </button>
     </div>
     <div class="nav-group">
-      <div class="nav-heading">模型接口 <span>05</span></div>
+      <div class="nav-heading">模型接口</div>
       <nav aria-label="接口列表">
         <button
           v-for="item in filtered"
@@ -477,6 +479,8 @@ onBeforeUnmount(() => {
         </aside>
       </div>
     </template>
+
+    <MemoryChatPage v-else-if="current.memory" />
 
     <div v-else class="workspace">
       <article class="document">
