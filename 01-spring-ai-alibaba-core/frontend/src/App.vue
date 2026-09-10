@@ -24,11 +24,13 @@ import {
   Settings2,
   Square,
   Terminal,
+  Wrench,
   X,
   Zap,
 } from '@lucide/vue'
 import CodeBlock from './components/CodeBlock.vue'
 import MemoryChatPage from './components/MemoryChatPage.vue'
+import ToolChatPage from './components/ToolChatPage.vue'
 import { endpoints, parameters, responseFields } from './data/endpoints'
 import { ApiError, buildCurl, buildPayload, callChat } from './lib/api'
 import type { ChatResponse, Draft } from './lib/api'
@@ -61,6 +63,7 @@ const iconFor = (id: string) =>
     messages: MessageSquare,
     stream: Radio,
     memory: MessageSquare,
+    tools: Wrench,
   })[id] || Code2
 const drafts = reactive<Record<string, Draft>>(
   Object.fromEntries(
@@ -481,6 +484,8 @@ onBeforeUnmount(() => {
     </template>
 
     <MemoryChatPage v-else-if="current.memory" />
+
+    <ToolChatPage v-else-if="current.tools" />
 
     <div v-else class="workspace">
       <article class="document">

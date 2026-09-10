@@ -32,4 +32,17 @@ public class GlobalExceptionHandler {
                 new ApiError(IdUtil.fastSimpleUUID(), "MODEL_CALL_FAILED", exception.getMessage(), Instant.now())
         );
     }
+
+    @ExceptionHandler(ToolOperationException.class)
+    public ResponseEntity<ApiError> handleToolOperation(
+            ToolOperationException exception) {
+        return ResponseEntity.badRequest().body(
+                new ApiError(
+                        IdUtil.fastSimpleUUID(),
+                        "TOOL_OPERATION_FAILED",
+                        exception.getMessage(),
+                        Instant.now()
+                )
+        );
+    }
 }

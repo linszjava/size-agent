@@ -10,6 +10,7 @@ export interface Endpoint {
   stream?: boolean
   basic?: boolean
   memory?: boolean
+  tools?: boolean
   java: string
 }
 
@@ -88,6 +89,19 @@ export const endpoints: Endpoint[] = [
       '通过 userId 隔离用户，通过 conversationId 标识会话。页面支持普通与流式对话、历史记录查询和会话清空。',
     example: '我叫小林，请记住我的名字。',
     java: 'memoryChatClient.prompt()\n    .user(request.message())\n    .advisors(advisor -> advisor.param(\n        ChatMemory.CONVERSATION_ID, memoryKey))\n    .call()\n    .content();',
+  },
+  {
+    id: 'tools',
+    title: 'Tool Calling',
+    label: '工具调用',
+    path: '/api/tools/chat',
+    tag: 'TOOLS',
+    tools: true,
+    description: '让模型调用受控的 Java 工具获取实时或业务数据。',
+    detail:
+      '员工助手可以查询演示天气、当前时间、本人排班和企业制度，也可以生成待确认的换班申请。换班必须通过确认接口完成最终提交。',
+    example: '查询我今天的排班。',
+    java: 'chatClient.prompt()\n    .user(message)\n    .tools(employeeAssistantTool, weatherTool)\n    .toolCallbacks(currentTimeTool)\n    .toolContext(Map.of("employeeId", employeeId))\n    .call()\n    .content();',
   },
 ]
 
