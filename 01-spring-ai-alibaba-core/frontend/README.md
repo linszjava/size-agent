@@ -2,6 +2,20 @@
 
 当前 Spring Boot 项目的本地接口文档与调试台，使用 Vue 3、TypeScript 和 Vite。
 
+## 版本记录
+
+版本标签用于保存每个学习阶段完成时的代码状态。可以在 IDEA 的 Git 日志中签出对应标签，查看当时的完整项目代码。
+
+| 标签        | 日期       | 提交      | 完成内容                                                                                                        |
+| ----------- | ---------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `tag-1.0`   | 2026-09-06 | `44188b4` | 完成 DashScope ChatClient 基础接入接口及接口测试。                                                              |
+| `tag-1.1`   | 2026-09-07 | `aaf6ba1` | 完成 DashScope ChatModel、ChatClient、消息历史和 SSE 流式输出接口；新增 Vue 3 + TypeScript 接口文档与调试页面。 |
+| `tag-1.2-1` | 2026-09-08 | `783fd4e` | 完成 Chat Memory 用户对话记忆的内存存储实现，支持普通对话、流式对话、查询历史和清空历史。                       |
+| `tag-1.2-2` | 2026-09-08 | `b50aa40` | 将 Chat Memory 改为 MySQL 持久化存储；完成对话记忆前端页面及接口联调。                                          |
+| `tag-1.3`   | 2026-09-10 | `0c09b12` | 完成 Tool Calling 前后端接口联调，支持天气、时间、员工排班、企业制度查询，以及带二次确认的换班申请。            |
+
+标签记录的是固定的代码快照。签出标签后会进入 detached HEAD 状态；如果需要在历史版本上继续开发，应从该标签新建分支。
+
 ## 启动
 
 需要 Node.js 22.12+（或满足 Vite 8 要求的较新版本）。
@@ -20,13 +34,19 @@ npm run dev
 
 ## 已适配接口
 
-| 页面       | POST 路径               | 响应              |
-| ---------- | ----------------------- | ----------------- |
-| 基础对话   | `/api/chat/v1`          | ChatResponseDto   |
-| ChatModel  | `/api/core/chat-model`  | ChatResponseDto   |
-| ChatClient | `/api/core/chat-client` | ChatResponseDto   |
-| 消息历史   | `/api/core/messages`    | ChatResponseDto   |
-| 流式输出   | `/api/core/stream`      | text/event-stream |
+| 页面       | 方法   | 路径                                         | 响应              |
+| ---------- | ------ | -------------------------------------------- | ----------------- |
+| 基础对话   | POST   | `/api/chat/v1`                               | ChatResponseDto   |
+| ChatModel  | POST   | `/api/core/chat-model`                       | ChatResponseDto   |
+| ChatClient | POST   | `/api/core/chat-client`                      | ChatResponseDto   |
+| 消息历史   | POST   | `/api/core/messages`                         | ChatResponseDto   |
+| 流式输出   | POST   | `/api/core/stream`                           | text/event-stream |
+| 记忆对话   | POST   | `/api/memory/chat`                           | JSON              |
+| 记忆流式   | POST   | `/api/memory/stream`                         | text/event-stream |
+| 查询记忆   | GET    | `/api/memory/conversations/{conversationId}` | JSON              |
+| 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204               |
+| 工具调用   | POST   | `/api/tools/chat`                            | JSON              |
+| 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON              |
 
 提供按接口保存的本次页面会话表单、参数校验、JSON / cURL / Java 示例、复制、原始错误、耗时及 Token 用量。刷新页面会重置表单，不保存聊天内容到浏览器存储。`⌘/Ctrl + Enter` 发送，`⌘/Ctrl + K` 搜索接口。
 
