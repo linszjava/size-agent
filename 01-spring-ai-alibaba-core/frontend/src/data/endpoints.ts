@@ -11,6 +11,7 @@ export interface Endpoint {
   basic?: boolean
   memory?: boolean
   tools?: boolean
+  knowledge?: boolean
   java: string
 }
 
@@ -102,6 +103,18 @@ export const endpoints: Endpoint[] = [
       '员工助手可以查询演示天气、当前时间、本人排班和企业制度，也可以生成待确认的换班申请。换班必须通过确认接口完成最终提交。',
     example: '查询我今天的排班。',
     java: 'chatClient.prompt()\n    .user(message)\n    .tools(employeeAssistantTool, weatherTool)\n    .toolCallbacks(currentTimeTool)\n    .toolContext(Map.of("employeeId", employeeId))\n    .call()\n    .content();',
+  },
+  {
+    id: 'knowledge',
+    title: '知识库问答',
+    label: '知识库 / RAG',
+    path: '/api/knowledge/ask',
+    description: '上传文档，检索知识并查看回答来源。',
+    detail: '支持租户与部门范围内的文档上传和知识问答。',
+    tag: 'RAG',
+    example: '请根据知识库介绍公司的休假制度。',
+    knowledge: true,
+    java: '',
   },
 ]
 

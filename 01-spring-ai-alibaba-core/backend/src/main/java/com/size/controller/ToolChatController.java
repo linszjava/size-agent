@@ -1,8 +1,8 @@
 package com.size.controller;
 
-import com.size.model.SwapConfirmRequest;
-import com.size.model.ToolChatRequest;
-import com.size.model.ToolChatResponse;
+import com.size.model.tool.SwapConfirmRequest;
+import com.size.model.tool.ToolChatRequest;
+import com.size.model.tool.ToolChatResponse;
 import com.size.service.ToolChatService;
 import com.size.tools.EmployeeAssistantTool;
 import jakarta.validation.Valid;

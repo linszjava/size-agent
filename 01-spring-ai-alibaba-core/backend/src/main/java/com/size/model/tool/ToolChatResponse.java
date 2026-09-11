@@ -1,4 +1,4 @@
-package com.size.model;
+package com.size.model.tool;
 
 public record ToolChatResponse(
         String content

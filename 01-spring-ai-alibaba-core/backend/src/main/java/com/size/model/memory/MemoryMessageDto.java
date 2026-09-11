@@ -1,4 +1,4 @@
-package com.size.model;
+package com.size.model.memory;
 
 public record MemoryMessageDto(
         String type,

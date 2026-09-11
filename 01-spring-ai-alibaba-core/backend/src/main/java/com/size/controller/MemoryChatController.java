@@ -1,7 +1,7 @@
 package com.size.controller;
 
-import com.size.model.MemoryChatRequest;
-import com.size.model.MemoryMessageDto;
+import com.size.model.memory.MemoryChatRequest;
+import com.size.model.memory.MemoryMessageDto;
 import com.size.service.MemoryChatService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

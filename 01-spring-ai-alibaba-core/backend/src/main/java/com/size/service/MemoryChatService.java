@@ -1,8 +1,8 @@
 package com.size.service;
 
 import cn.hutool.core.util.StrUtil;
-import com.size.model.MemoryChatRequest;
-import com.size.model.MemoryMessageDto;
+import com.size.model.memory.MemoryChatRequest;
+import com.size.model.memory.MemoryMessageDto;
 import com.size.tools.MemoryChatClientTool;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;

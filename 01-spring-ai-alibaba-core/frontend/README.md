@@ -47,6 +47,8 @@ npm run dev
 | 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204               |
 | 工具调用   | POST   | `/api/tools/chat`                            | JSON              |
 | 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON              |
+| 文档上传 | POST | `/api/knowledge/documents` | KnowledgeUploadResponse |
+| 知识问答 | POST | `/api/knowledge/ask` | RagAnswerResponse |
 
 提供按接口保存的本次页面会话表单、参数校验、JSON / cURL / Java 示例、复制、原始错误、耗时及 Token 用量。刷新页面会重置表单，不保存聊天内容到浏览器存储。`⌘/Ctrl + Enter` 发送，`⌘/Ctrl + K` 搜索接口。
 
@@ -78,3 +80,7 @@ npm run preview
 参考：[Vue TypeScript](https://vuejs.org/guide/typescript/overview.html)、[Vite 代理配置](https://vite.dev/config/server-options.html#server-proxy)。
 
 可选的 WebMCP 浏览器接口仅用于打开指定文档，不会发送模型请求。不支持该能力时不影响正常使用；其注册与参数契约已通过模拟上下文测试，未在实际支持 WebMCP 的浏览器中验证。
+
+## 知识库页面
+
+从导航选择「知识库 / RAG」，或访问 `http://127.0.0.1:5173/#knowledge`。填写租户和部门 ID，选择文档及可见范围后上传；上传成功可查看文档 ID、分块数和状态。问答展示回答及来源文件、页码、相关性分数，并支持查看原始 JSON。PUBLIC 表示同租户内公开，DEPARTMENT 表示同租户同部门可见。上传和问答均依赖已正常配置的后端服务。

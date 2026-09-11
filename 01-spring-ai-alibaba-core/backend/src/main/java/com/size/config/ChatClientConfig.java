@@ -29,6 +29,7 @@ public class ChatClientConfig {
     public ChatClient dashScopeChatClient(ChatClient.Builder builder) {
         return builder
                 .defaultSystem(systemPrompt)
+                .defaultAdvisors()
                 .build();
 
     }

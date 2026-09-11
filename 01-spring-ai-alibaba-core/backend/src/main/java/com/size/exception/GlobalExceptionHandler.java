@@ -45,4 +45,17 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+    @ExceptionHandler(KnowledgeBaseException.class)
+    public ResponseEntity<ApiError> handleKnowledgeBase(
+            KnowledgeBaseException exception) {
+        return ResponseEntity.badRequest().body(
+                new ApiError(
+                        IdUtil.fastSimpleUUID(),
+                        "KNOWLEDGE_BASE_FAILED",
+                        exception.getMessage(),
+                        Instant.now()
+                )
+        );
+    }
 }

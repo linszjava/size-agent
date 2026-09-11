@@ -31,6 +31,7 @@ import {
 import CodeBlock from './components/CodeBlock.vue'
 import MemoryChatPage from './components/MemoryChatPage.vue'
 import ToolChatPage from './components/ToolChatPage.vue'
+import KnowledgeBasePage from './components/KnowledgeBasePage.vue'
 import { endpoints, parameters, responseFields } from './data/endpoints'
 import { ApiError, buildCurl, buildPayload, callChat } from './lib/api'
 import type { ChatResponse, Draft } from './lib/api'
@@ -64,6 +65,7 @@ const iconFor = (id: string) =>
     stream: Radio,
     memory: MessageSquare,
     tools: Wrench,
+    knowledge: BookOpen,
   })[id] || Code2
 const drafts = reactive<Record<string, Draft>>(
   Object.fromEntries(
@@ -279,7 +281,14 @@ function onKey(event: KeyboardEvent) {
     mobileMenu.value = true
     nextTick(() => searchInput.value?.focus())
   }
-  if ((event.metaKey || event.ctrlKey) && event.key === 'Enter' && !isGuide.value) {
+  if (
+    (event.metaKey || event.ctrlKey) &&
+    event.key === 'Enter' &&
+    !isGuide.value &&
+    !current.value.memory &&
+    !current.value.tools &&
+    !current.value.knowledge
+  ) {
     event.preventDefault()
     void sendRequest()
   }
@@ -417,7 +426,7 @@ onBeforeUnmount(() => {
           <h1>让第一条请求，<br />成为你的起点<span class="green">。</span></h1>
           <p class="lead">连接本地服务，在文档中探索 Spring AI Alibaba。</p>
           <div class="guide-note">
-            <Zap :size="19" /><span>5 个真实接口 · 可配置参数 · 实时流式输出</span>
+            <Zap :size="19" /><span>模型对话 · 对话记忆 · 工具调用 · 知识库问答</span>
           </div>
           <section class="guide-step">
             <span class="step-number">01</span>
@@ -486,6 +495,8 @@ onBeforeUnmount(() => {
     <MemoryChatPage v-else-if="current.memory" />
 
     <ToolChatPage v-else-if="current.tools" />
+
+    <KnowledgeBasePage v-else-if="current.knowledge" />
 
     <div v-else class="workspace">
       <article class="document">

@@ -1,4 +1,4 @@
-package com.size.model;
+package com.size.model.tool;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

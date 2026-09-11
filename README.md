@@ -59,6 +59,8 @@ npm run dev
 | 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204               |
 | 工具调用   | POST   | `/api/tools/chat`                            | JSON              |
 | 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON              |
+| 文档上传 | POST | `/api/knowledge/documents` | KnowledgeUploadResponse |
+| 知识问答 | POST | `/api/knowledge/ask` | RagAnswerResponse |
 
 ## 前端检查与构建
 
