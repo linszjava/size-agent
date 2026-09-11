@@ -93,7 +93,14 @@ npm test
 npm run build
 ```
 
-更完整的前端开发说明见 [`01-spring-ai-alibaba-core/frontend/README.md`](01-spring-ai-alibaba-core/frontend/README.md)。
+### 前端开发说明
+
+- 可复制前端目录的 `.env.example` 为 `.env.local`，通过 `API_PROXY_TARGET` 修改后端代理地址，修改后需重启 Vite。模型密钥由后端管理。
+- `npm run preview` 默认监听 `4173`；生产部署需要单独配置 `/api` 反向代理，开发代理不会编译进静态文件。
+- `npm run format` / `npm run format:check` 用于格式化及检查前端文件。
+- `src/data/endpoints.ts` 管理导航与接口元数据，`src/lib/knowledgeApi.ts` 封装知识库请求，`src/components/KnowledgeBasePage.vue` 实现知识库页面。
+- `⌘/Ctrl + K` 搜索接口；知识问答输入框中可使用 `⌘/Ctrl + Enter` 发送。刷新页面会重置表单。
+- 知识库请求等待上限为 120 秒；停止等待不保证后端停止处理，上传超时后应先检查后端结果，避免重复上传。
 
 ## RAG 知识库流程
 
