@@ -13,6 +13,7 @@
 | `tag-1.2-1` | 2026-09-08 | `783fd4e` | 完成 Chat Memory 用户对话记忆的内存存储实现，支持普通对话、流式对话、查询历史和清空历史。                       |
 | `tag-1.2-2` | 2026-09-08 | `b50aa40` | 将 Chat Memory 改为 MySQL 持久化存储；完成对话记忆前端页面及接口联调。                                          |
 | `tag-1.3`   | 2026-09-10 | `0c09b12` | 完成 Tool Calling 前后端接口联调，支持天气、时间、员工排班、企业制度查询，以及带二次确认的换班申请。            |
+| `tag-1.4`   | 2026-09-12 | `5fe702f` | 完成 RAG 文档上传与知识问答、租户与部门过滤、前端调试页面，以及测试 PDF。                                       |
 
 标签记录的是固定的代码快照。签出标签后会进入 detached HEAD 状态；如果需要在历史版本上继续开发，应从该标签新建分支。
 
@@ -34,21 +35,21 @@ npm run dev
 
 ## 已适配接口
 
-| 页面       | 方法   | 路径                                         | 响应              |
-| ---------- | ------ | -------------------------------------------- | ----------------- |
-| 基础对话   | POST   | `/api/chat/v1`                               | ChatResponseDto   |
-| ChatModel  | POST   | `/api/core/chat-model`                       | ChatResponseDto   |
-| ChatClient | POST   | `/api/core/chat-client`                      | ChatResponseDto   |
-| 消息历史   | POST   | `/api/core/messages`                         | ChatResponseDto   |
-| 流式输出   | POST   | `/api/core/stream`                           | text/event-stream |
-| 记忆对话   | POST   | `/api/memory/chat`                           | JSON              |
-| 记忆流式   | POST   | `/api/memory/stream`                         | text/event-stream |
-| 查询记忆   | GET    | `/api/memory/conversations/{conversationId}` | JSON              |
-| 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204               |
-| 工具调用   | POST   | `/api/tools/chat`                            | JSON              |
-| 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON              |
-| 文档上传 | POST | `/api/knowledge/documents` | KnowledgeUploadResponse |
-| 知识问答 | POST | `/api/knowledge/ask` | RagAnswerResponse |
+| 页面       | 方法   | 路径                                         | 响应                    |
+| ---------- | ------ | -------------------------------------------- | ----------------------- |
+| 基础对话   | POST   | `/api/chat/v1`                               | ChatResponseDto         |
+| ChatModel  | POST   | `/api/core/chat-model`                       | ChatResponseDto         |
+| ChatClient | POST   | `/api/core/chat-client`                      | ChatResponseDto         |
+| 消息历史   | POST   | `/api/core/messages`                         | ChatResponseDto         |
+| 流式输出   | POST   | `/api/core/stream`                           | text/event-stream       |
+| 记忆对话   | POST   | `/api/memory/chat`                           | JSON                    |
+| 记忆流式   | POST   | `/api/memory/stream`                         | text/event-stream       |
+| 查询记忆   | GET    | `/api/memory/conversations/{conversationId}` | JSON                    |
+| 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204                     |
+| 工具调用   | POST   | `/api/tools/chat`                            | JSON                    |
+| 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON                    |
+| 文档上传   | POST   | `/api/knowledge/documents`                   | KnowledgeUploadResponse |
+| 知识问答   | POST   | `/api/knowledge/ask`                         | RagAnswerResponse       |
 
 提供按接口保存的本次页面会话表单、参数校验、JSON / cURL / Java 示例、复制、原始错误、耗时及 Token 用量。刷新页面会重置表单，不保存聊天内容到浏览器存储。`⌘/Ctrl + Enter` 发送，`⌘/Ctrl + K` 搜索接口。
 
@@ -64,7 +65,7 @@ npm run build
 npm run preview
 ```
 
-构建会先执行严格 TypeScript 检查，再生成 `dist/`。测试覆盖参数边界、HTTP 错误、UTF-8 分块、SSE 换行与取消信号。
+构建会先执行严格 TypeScript 检查，再生成 `dist/`。测试覆盖参数边界、HTTP 错误、UTF-8 分块、SSE 换行与取消信号，以及知识库 multipart 上传、身份请求头与问答响应。
 
 `npm run preview` 默认监听 `4173`，保留同一后端代理规则。生产部署时，需要将 `dist/` 交给静态服务，并单独配置 `/api` 反向代理到 Spring Boot；Vite 开发代理不会被编译进静态文件。也可以将构建产物放入 Spring Boot 的静态资源目录由同源服务提供。当前实现按本地项目集成，未发布到外部托管服务。
 
@@ -74,6 +75,8 @@ npm run preview
 - `src/lib/api.ts`：类型、请求校验、HTTP 客户端与 SSE 解析。
 - `src/App.vue`：文档导航、请求表单与响应面板。
 - `src/style.css`：文档站主题与响应式布局。
+- `src/components/KnowledgeBasePage.vue`：知识库上传卡片、身份范围、问答与来源展示。
+- `src/lib/knowledgeApi.ts`：multipart 上传、知识问答请求与错误处理。
 
 新增接口时先确认后端契约，再更新接口数据、对应表单与客户端类型。cURL 示例使用默认后端地址 `http://localhost:8888`，自定义代理目标时请同步调整复制后的命令地址。
 
@@ -84,3 +87,11 @@ npm run preview
 ## 知识库页面
 
 从导航选择「知识库 / RAG」，或访问 `http://127.0.0.1:5173/#knowledge`。填写租户和部门 ID，选择文档及可见范围后上传；上传成功可查看文档 ID、分块数和状态。问答展示回答及来源文件、页码、相关性分数，并支持查看原始 JSON。PUBLIC 表示同租户内公开，DEPARTMENT 表示同租户同部门可见。上传和问答均依赖已正常配置的后端服务。
+
+### 快速验证
+
+选择 [员工休假与排班测试手册](../../output/pdf/知识库测试-员工休假与排班手册.pdf)，保留相同的租户和部门上传并提问：「连续休假 4 天，需要提前多久申请？」上传卡片支持文件名和大小展示、更换文件及格式校验，接受 PDF、DOC、DOCX、TXT、MD，文件需小于 20 MB。
+
+上传和问答期间会禁用表单以避免范围变化；请求等待上限为 120 秒。停止等待不保证后端停止处理，上传超时后应先核对后端结果，避免重复上传。切换租户或部门会清空展示结果，原文档仍保存在后端。
+
+没有引用来源可能表示没有符合权限及相似度条件的分块；出现 500 时需结合后端堆栈排查。后端环境变量、检索流程和权限约定见 [项目 README](../../README.md)。
