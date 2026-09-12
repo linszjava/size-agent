@@ -11,6 +11,7 @@ export interface Endpoint {
   basic?: boolean
   memory?: boolean
   tools?: boolean
+  agent?: boolean
   knowledge?: boolean
   java: string
 }
@@ -114,6 +115,18 @@ export const endpoints: Endpoint[] = [
     tag: 'RAG',
     example: '请根据知识库介绍公司的休假制度。',
     knowledge: true,
+    java: '',
+  },
+  {
+    id: 'agent',
+    title: '员工 Agent',
+    label: '员工 Agent',
+    path: '/api/agents/employee/chat',
+    tag: 'AGENT',
+    agent: true,
+    description: '在连续会话中查询排班、解释制度并准备换班。',
+    detail: '按员工与会话隔离上下文，调用员工工具完成任务。',
+    example: '查询我今天的排班。',
     java: '',
   },
 ]

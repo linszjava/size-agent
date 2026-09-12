@@ -84,6 +84,7 @@ npm run dev
 | 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON                    |
 | 文档上传   | POST   | `/api/knowledge/documents`                   | KnowledgeUploadResponse |
 | 知识问答   | POST   | `/api/knowledge/ask`                         | RagAnswerResponse       |
+| 员工 Agent | POST   | `/api/agents/employee/chat`                  | AgentChatResponse       |
 
 ## 前端检查与构建
 
@@ -141,3 +142,11 @@ mvn test
 ```
 
 当前回归测试覆盖 Redis 权限查询转义、条件分组、权限校验和非法 ID；实际模型与数据库联调需要可用的外部服务。
+
+## 员工 Agent 页面
+
+从导航进入「员工 Agent」，或访问 `http://127.0.0.1:5173/#agent`。填写员工 ID、会话 ID，发送排班或制度问题，可在同一会话中继续追问。员工身份通过 `X-Employee-Id` 请求头传入，请求体为 `conversationId` 和 `message`；两个 ID 均为 1–64 位字母、数字、下划线或短横线，消息最多 1,000 字符。
+
+后端使用 ReactAgent 和 MemorySaver 按员工与会话隔离上下文，重启后端会丢失会话。新建会话生成新 ID；页面只展示本次打开后收到的记录，不提供历史记录加载或服务端会话删除。接口返回最终回答，不返回流式片段或工具执行轨迹。
+
+换班仍需用户核对回答后，在「确认换班」区域提交令牌，复用 `/api/tools/shift-swaps/confirm`。切换身份或会话会清空当前展示内容与令牌。请求最多等待 120 秒，超时或离开页面不保证后端立即停止，重试前应检查处理结果。

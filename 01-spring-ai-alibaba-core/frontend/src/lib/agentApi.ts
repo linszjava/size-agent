@@ -1,12 +1,8 @@
-export interface SwapResult {
-  requestId: string
-  employeeId: string
-  shiftDate: string
-  targetShift: string
-  status: string
+export interface AgentChatResponse {
+  conversationId: string
+  content: string
 }
-
-export class ToolApiError extends Error {
+export class AgentApiError extends Error {
   constructor(
     message: string,
     public detail = '',
@@ -36,28 +32,25 @@ async function request<T>(
     } catch {
       // 非 JSON 错误保留在 detail 中。
     }
-    throw new ToolApiError(message, raw)
+    throw new AgentApiError(message, raw)
   }
   try {
     return JSON.parse(raw) as T
   } catch {
-    throw new ToolApiError('接口未返回有效 JSON。', raw)
+    throw new AgentApiError('接口未返回有效 JSON。', raw)
   }
 }
 
-export function callToolChat(employeeId: string, message: string) {
-  return request<{ content: string }>('/api/tools/chat', employeeId, { message })
-}
-
-export function confirmShiftSwap(
+export function callEmployeeAgent(
   employeeId: string,
-  confirmationToken: string,
+  conversationId: string,
+  message: string,
   signal?: AbortSignal,
 ) {
-  return request<SwapResult>(
-    '/api/tools/shift-swaps/confirm',
+  return request<AgentChatResponse>(
+    '/api/agents/employee/chat',
     employeeId,
-    { confirmationToken },
+    { conversationId, message },
     signal,
   )
 }

@@ -107,6 +107,13 @@
             <artifactId>spring-ai-advisors-vector-store</artifactId>
             <version>1.1.2</version>
         </dependency>
+
+        <!-- Agent Framework -->
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-agent-framework</artifactId>
+            <version>${spring-ai-alibaba-extensions.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

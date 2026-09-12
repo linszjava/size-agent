@@ -30,6 +30,7 @@ import {
 } from '@lucide/vue'
 import CodeBlock from './components/CodeBlock.vue'
 import MemoryChatPage from './components/MemoryChatPage.vue'
+import EmployeeAgentPage from './components/EmployeeAgentPage.vue'
 import ToolChatPage from './components/ToolChatPage.vue'
 import KnowledgeBasePage from './components/KnowledgeBasePage.vue'
 import { endpoints, parameters, responseFields } from './data/endpoints'
@@ -65,6 +66,7 @@ const iconFor = (id: string) =>
     stream: Radio,
     memory: MessageSquare,
     tools: Wrench,
+    agent: MessageSquare,
     knowledge: BookOpen,
   })[id] || Code2
 const drafts = reactive<Record<string, Draft>>(
@@ -287,7 +289,8 @@ function onKey(event: KeyboardEvent) {
     !isGuide.value &&
     !current.value.memory &&
     !current.value.tools &&
-    !current.value.knowledge
+    !current.value.knowledge &&
+    !current.value.agent
   ) {
     event.preventDefault()
     void sendRequest()
@@ -495,6 +498,8 @@ onBeforeUnmount(() => {
     <MemoryChatPage v-else-if="current.memory" />
 
     <ToolChatPage v-else-if="current.tools" />
+
+    <EmployeeAgentPage v-else-if="current.agent" />
 
     <KnowledgeBasePage v-else-if="current.knowledge" />
 

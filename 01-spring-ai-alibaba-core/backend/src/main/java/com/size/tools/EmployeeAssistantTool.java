@@ -2,6 +2,7 @@ package com.size.tools;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.size.exception.ToolOperationException;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.annotation.Tool;
@@ -101,6 +102,13 @@ public class EmployeeAssistantTool {
 
     private String requiredEmployeeId(ToolContext toolContext) {
         Object employeeId = toolContext.getContext().get(EMPLOYEE_ID);
+        if (employeeId == null) {
+            Object config = toolContext.getContext().get("config");
+            System.out.println("===toolContext==="+toolContext);
+            if (config instanceof RunnableConfig runnableConfig) {
+                employeeId = runnableConfig.metadata(EMPLOYEE_ID).orElse(null);
+            }
+        }
         if (employeeId == null || StrUtil.isBlank(employeeId.toString())) {
             throw new IllegalStateException("缺少登录员工身份");
         }
