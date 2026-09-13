@@ -11,6 +11,7 @@ export interface Endpoint {
   basic?: boolean
   memory?: boolean
   tools?: boolean
+  graph?: boolean
   agent?: boolean
   knowledge?: boolean
   java: string
@@ -127,6 +128,18 @@ export const endpoints: Endpoint[] = [
     description: '在连续会话中查询排班、解释制度并准备换班。',
     detail: '按员工与会话隔离上下文，调用员工工具完成任务。',
     example: '查询我今天的排班。',
+    java: '',
+  },
+  {
+    id: 'graph',
+    title: 'Graph 换班工作流',
+    label: 'Graph 工作流',
+    path: '/api/workflows/shift-swaps',
+    tag: 'GRAPH',
+    graph: true,
+    description: '创建换班流程，在人工确认后继续执行或拒绝。',
+    detail: '展示工作流状态、班次、制度与申请编号。',
+    example: '',
     java: '',
   },
 ]

@@ -30,6 +30,7 @@ import {
 } from '@lucide/vue'
 import CodeBlock from './components/CodeBlock.vue'
 import MemoryChatPage from './components/MemoryChatPage.vue'
+import ShiftWorkflowPage from './components/ShiftWorkflowPage.vue'
 import EmployeeAgentPage from './components/EmployeeAgentPage.vue'
 import ToolChatPage from './components/ToolChatPage.vue'
 import KnowledgeBasePage from './components/KnowledgeBasePage.vue'
@@ -67,6 +68,7 @@ const iconFor = (id: string) =>
     memory: MessageSquare,
     tools: Wrench,
     agent: MessageSquare,
+    graph: Layers,
     knowledge: BookOpen,
   })[id] || Code2
 const drafts = reactive<Record<string, Draft>>(
@@ -290,7 +292,8 @@ function onKey(event: KeyboardEvent) {
     !current.value.memory &&
     !current.value.tools &&
     !current.value.knowledge &&
-    !current.value.agent
+    !current.value.agent &&
+    !current.value.graph
   ) {
     event.preventDefault()
     void sendRequest()
@@ -500,6 +503,8 @@ onBeforeUnmount(() => {
     <ToolChatPage v-else-if="current.tools" />
 
     <EmployeeAgentPage v-else-if="current.agent" />
+
+    <ShiftWorkflowPage v-else-if="current.graph" />
 
     <KnowledgeBasePage v-else-if="current.knowledge" />
 

@@ -69,22 +69,24 @@ npm run dev
 
 ## 已适配接口
 
-| 页面       | 方法   | 路径                                         | 响应                    |
-| ---------- | ------ | -------------------------------------------- | ----------------------- |
-| 基础对话   | POST   | `/api/chat/v1`                               | ChatResponseDto         |
-| ChatModel  | POST   | `/api/core/chat-model`                       | ChatResponseDto         |
-| ChatClient | POST   | `/api/core/chat-client`                      | ChatResponseDto         |
-| 消息历史   | POST   | `/api/core/messages`                         | ChatResponseDto         |
-| 流式输出   | POST   | `/api/core/stream`                           | text/event-stream       |
-| 记忆对话   | POST   | `/api/memory/chat`                           | JSON                    |
-| 记忆流式   | POST   | `/api/memory/stream`                         | text/event-stream       |
-| 查询记忆   | GET    | `/api/memory/conversations/{conversationId}` | JSON                    |
-| 清空记忆   | DELETE | `/api/memory/conversations/{conversationId}` | 204                     |
-| 工具调用   | POST   | `/api/tools/chat`                            | JSON                    |
-| 确认换班   | POST   | `/api/tools/shift-swaps/confirm`             | JSON                    |
-| 文档上传   | POST   | `/api/knowledge/documents`                   | KnowledgeUploadResponse |
-| 知识问答   | POST   | `/api/knowledge/ask`                         | RagAnswerResponse       |
-| 员工 Agent | POST   | `/api/agents/employee/chat`                  | AgentChatResponse       |
+| 页面           | 方法   | 路径                                               | 响应                    |
+| -------------- | ------ | -------------------------------------------------- | ----------------------- |
+| 基础对话       | POST   | `/api/chat/v1`                                     | ChatResponseDto         |
+| ChatModel      | POST   | `/api/core/chat-model`                             | ChatResponseDto         |
+| ChatClient     | POST   | `/api/core/chat-client`                            | ChatResponseDto         |
+| 消息历史       | POST   | `/api/core/messages`                               | ChatResponseDto         |
+| 流式输出       | POST   | `/api/core/stream`                                 | text/event-stream       |
+| 记忆对话       | POST   | `/api/memory/chat`                                 | JSON                    |
+| 记忆流式       | POST   | `/api/memory/stream`                               | text/event-stream       |
+| 查询记忆       | GET    | `/api/memory/conversations/{conversationId}`       | JSON                    |
+| 清空记忆       | DELETE | `/api/memory/conversations/{conversationId}`       | 204                     |
+| 工具调用       | POST   | `/api/tools/chat`                                  | JSON                    |
+| 确认换班       | POST   | `/api/tools/shift-swaps/confirm`                   | JSON                    |
+| 文档上传       | POST   | `/api/knowledge/documents`                         | KnowledgeUploadResponse |
+| 知识问答       | POST   | `/api/knowledge/ask`                               | RagAnswerResponse       |
+| 员工 Agent     | POST   | `/api/agents/employee/chat`                        | AgentChatResponse       |
+| Graph 创建流程 | POST   | `/api/workflows/shift-swaps`                       | ShiftWorkflowResponse   |
+| Graph 员工确认 | POST   | `/api/workflows/shift-swaps/{workflowId}/approval` | ShiftWorkflowResponse   |
 
 ## 前端检查与构建
 
@@ -150,3 +152,11 @@ mvn test
 后端使用 ReactAgent 和 MemorySaver 按员工与会话隔离上下文，重启后端会丢失会话。新建会话生成新 ID；页面只展示本次打开后收到的记录，不提供历史记录加载或服务端会话删除。接口返回最终回答，不返回流式片段或工具执行轨迹。
 
 换班仍需用户核对回答后，在「确认换班」区域提交令牌，复用 `/api/tools/shift-swaps/confirm`。切换身份或会话会清空当前展示内容与令牌。请求最多等待 120 秒，超时或离开页面不保证后端立即停止，重试前应检查处理结果。
+
+## Graph 换班工作流页面
+
+从导航进入「Graph 工作流」，或访问 `http://127.0.0.1:5173/#graph`。填写员工 ID、换班日期、目标班次（白班或晚班）和原因（最多 200 字符），创建后查看工作流 ID、当前与目标班次、制度和状态。
+
+流程在 `human_approval` 节点前暂停，状态为 `WAITING_EMPLOYEE_CONFIRMATION` 时由员工选择「确认并继续」或「拒绝申请」。确认接口提交布尔值 `approved`，并沿用创建时的 `X-Employee-Id`；也可手动填写待确认工作流 ID，但当前没有查询接口，页面无法预先加载该流程详情。结束后展示 `COMPLETED` 或 `REJECTED` 等后端实际状态及申请编号。
+
+当前 Graph 使用内存检查点和演示排班：更新排班、发送通知节点只返回演示状态，并未连接真实业务系统，也没有独立主管审批节点。重启后端会丢失流程；页面展示流程定义和最终响应，不模拟实时节点执行轨迹。请求超时不保证后端停止执行，重复操作前需核对后端结果。
