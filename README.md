@@ -160,3 +160,20 @@ mvn test
 流程在 `human_approval` 节点前暂停，状态为 `WAITING_EMPLOYEE_CONFIRMATION` 时由员工选择「确认并继续」或「拒绝申请」。确认接口提交布尔值 `approved`，并沿用创建时的 `X-Employee-Id`；也可手动填写待确认工作流 ID，但当前没有查询接口，页面无法预先加载该流程详情。结束后展示 `COMPLETED` 或 `REJECTED` 等后端实际状态及申请编号。
 
 当前 Graph 使用内存检查点和演示排班：更新排班、发送通知节点只返回演示状态，并未连接真实业务系统，也没有独立主管审批节点。重启后端会丢失流程；页面展示流程定义和最终响应，不模拟实时节点执行轨迹。请求超时不保证后端停止执行，重复操作前需核对后端结果。
+
+## MCP、Nacos 与 A2A 前端调试
+
+第二阶段 `02-mcp-nacos-a2a` 复用 `01-spring-ai-alibaba-core/frontend` 页面：
+
+| 页面入口              | 接口                                      | 默认代理目标            |
+| --------------------- | ----------------------------------------- | ----------------------- |
+| `/#mcp` · MCP / Nacos | `POST /api/mcp/chat`，JSON 字段 `message` | `http://localhost:9002` |
+| `/#a2a` · A2A / Nacos | `GET /api/a2a/hr`，查询参数 `question`    | `http://localhost:9102` |
+
+先启动 Nacos，再启动所需服务端与客户端。MCP 对应 `employee-mcp-server:9001` 和 `employee-mcp-client:9002`；A2A 对应 `hr-a2a-server:9101` 和 `employee-a2a-client:9102`。模块启动命令在 `02-mcp-nacos-a2a` 中执行 `mvn -pl <模块名> spring-boot:run`，Nacos 可通过该目录下 `docker compose up -d` 启动。
+
+前端 `.env.local` 可配置 `MCP_PROXY_TARGET`、`A2A_PROXY_TARGET`，修改后重启 Vite。两个路径优先于第一阶段 `/api` 代理，开发与 preview 均生效；生产静态服务需要配置相同的路径分流。
+
+MCP 可测试「查询员工 E1001 今天的排班，必须调用工具」。A2A 可测试「公司年假制度是什么？」；该模块独立演示每年 10 天年假、最多结转 5 天，和第一阶段 RAG 测试 PDF 无关。A2A 页面提取可识别的助手消息，完整状态保留在原始 JSON 中；两个接口均未暴露会话 ID 或执行轨迹。
+
+页面支持空输入校验、请求取消、120 秒等待上限和错误详情。客户端停止等待不保证远程执行停止。页面所示调用路径是架构说明，不是健康检查。模型与 Nacos 凭据仅在后端配置。

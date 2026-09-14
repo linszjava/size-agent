@@ -4,7 +4,11 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const target = env.API_PROXY_TARGET || 'http://localhost:8888'
-  const proxy = { '/api': { target, changeOrigin: true } }
+  const proxy = {
+    '/api/mcp': { target: env.MCP_PROXY_TARGET || 'http://localhost:9002', changeOrigin: true },
+    '/api/a2a': { target: env.A2A_PROXY_TARGET || 'http://localhost:9102', changeOrigin: true },
+    '/api': { target, changeOrigin: true },
+  }
   return {
     plugins: [vue()],
     server: { port: 5173, strictPort: true, proxy },

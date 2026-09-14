@@ -1,0 +1,14 @@
+services:
+  nacos:
+    image: nacos/nacos-server:v3.1.0
+    container_name: chapter12-nacos
+    environment:
+      MODE: standalone
+      NACOS_AUTH_ENABLE: "true"
+      NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:-SecretKey012345678901234567890123456789012345678901234567890123456789}
+      NACOS_AUTH_IDENTITY_KEY: ${NACOS_AUTH_IDENTITY_KEY:-chapter12}
+      NACOS_AUTH_IDENTITY_VALUE: ${NACOS_AUTH_IDENTITY_VALUE:-chapter12-secret}
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    restart: unless-stopped

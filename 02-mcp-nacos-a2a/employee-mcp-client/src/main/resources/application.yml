@@ -1,0 +1,40 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: employee-mcp-client
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      # qwen3.8-max-0902 是当前百炼实例中的部署模型，必须使用对应实例地址。
+      base-url: ${AI_DASHSCOPE_BASE_URL:https://llm-7gno6a71gk4wf1gh.cn-beijing.maas.aliyuncs.com}
+      chat:
+        options:
+          model: ${AI_MODEL:qwen3.8-max-0902}
+          multi-model: true
+    mcp:
+      client:
+        enabled: true
+        name: employee-mcp-client
+        version: 1.0.0
+        request-timeout: 30s
+        type: ASYNC
+    alibaba:
+      mcp:
+        nacos:
+          client:
+            enabled: true
+            streamable:
+              connections:
+                employee-server:
+                  service-name: employee-mcp-server
+                  version: 1.0.0
+            # configs 必须位于 client 之下，而且 key 必须与 connections 的 key 一致。
+            # 对应属性前缀：spring.ai.alibaba.mcp.nacos.client.configs
+            configs:
+              employee-server:
+                namespace: ${NACOS_NAMESPACE:public}
+                server-addr: ${NACOS_ADDRESS:127.0.0.1:8848}
+                username: ${NACOS_USERNAME:nacos}
+                password: ${NACOS_PASSWORD:nacos}

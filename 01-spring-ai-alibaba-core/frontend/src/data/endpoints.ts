@@ -1,4 +1,6 @@
 export interface Endpoint {
+  distributed?: 'mcp' | 'a2a'
+  method?: 'GET' | 'POST'
   id: string
   title: string
   label: string
@@ -140,6 +142,31 @@ export const endpoints: Endpoint[] = [
     description: '创建换班流程，在人工确认后继续执行或拒绝。',
     detail: '展示工作流状态、班次、制度与申请编号。',
     example: '',
+    java: '',
+  },
+  {
+    id: 'mcp',
+    title: 'MCP 远程工具',
+    label: 'MCP / Nacos',
+    path: '/api/mcp/chat',
+    tag: 'MCP',
+    distributed: 'mcp',
+    description: '通过 Nacos 发现并调用远程排班工具。',
+    detail: '',
+    example: '查询员工 E1001 今天的排班，必须调用工具',
+    java: '',
+  },
+  {
+    id: 'a2a',
+    title: 'A2A 人事专家',
+    label: 'A2A / Nacos',
+    path: '/api/a2a/hr',
+    method: 'GET',
+    tag: 'A2A',
+    distributed: 'a2a',
+    description: '通过服务发现调用远程人事专家 Agent。',
+    detail: '',
+    example: '公司年假制度是什么？',
     java: '',
   },
 ]

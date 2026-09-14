@@ -30,6 +30,7 @@ import {
 } from '@lucide/vue'
 import CodeBlock from './components/CodeBlock.vue'
 import MemoryChatPage from './components/MemoryChatPage.vue'
+import DistributedPage from './components/DistributedPage.vue'
 import ShiftWorkflowPage from './components/ShiftWorkflowPage.vue'
 import EmployeeAgentPage from './components/EmployeeAgentPage.vue'
 import ToolChatPage from './components/ToolChatPage.vue'
@@ -293,7 +294,8 @@ function onKey(event: KeyboardEvent) {
     !current.value.tools &&
     !current.value.knowledge &&
     !current.value.agent &&
-    !current.value.graph
+    !current.value.graph &&
+    !current.value.distributed
   ) {
     event.preventDefault()
     void sendRequest()
@@ -505,6 +507,12 @@ onBeforeUnmount(() => {
     <EmployeeAgentPage v-else-if="current.agent" />
 
     <ShiftWorkflowPage v-else-if="current.graph" />
+
+    <DistributedPage
+      v-else-if="current.distributed"
+      :key="current.id"
+      :mode="current.distributed"
+    />
 
     <KnowledgeBasePage v-else-if="current.knowledge" />
 

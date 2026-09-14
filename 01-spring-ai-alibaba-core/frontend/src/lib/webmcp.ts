@@ -53,7 +53,7 @@ export function registerApiNavigation(
               return {
                 endpointId: endpoint.id,
                 title: endpoint.title,
-                method: 'POST',
+                method: endpoint.method ?? 'POST',
                 path: endpoint.path,
                 requestSent: false,
               }

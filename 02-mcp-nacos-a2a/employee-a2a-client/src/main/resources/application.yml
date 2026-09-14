@@ -1,0 +1,19 @@
+server:
+  port: 9102
+
+spring:
+  application:
+    name: employee-a2a-client
+  ai:
+    alibaba:
+      a2a:
+        server:
+          enabled: false
+        nacos:
+          server-addr: ${NACOS_ADDRESS:127.0.0.1:8848}
+          username: ${NACOS_USERNAME:nacos}
+          password: ${NACOS_PASSWORD:nacos}
+          discovery:
+            enabled: true
+          registry:
+            enabled: false

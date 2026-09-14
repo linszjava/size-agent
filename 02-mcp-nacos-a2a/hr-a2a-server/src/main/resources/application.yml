@@ -1,0 +1,51 @@
+server:
+  port: 9101
+
+spring:
+  application:
+    name: hr-a2a-server
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+      # 与第 01 章使用同一个百炼部署模型及其专用访问地址。
+      base-url: ${AI_DASHSCOPE_BASE_URL:https://llm-7gno6a71gk4wf1gh.cn-beijing.maas.aliyuncs.com}
+      chat:
+        options:
+          model: ${AI_MODEL:qwen3.8-max-0902}
+          multi-model: true
+    alibaba:
+      a2a:
+        nacos:
+          server-addr: ${NACOS_ADDRESS:127.0.0.1:8848}
+          username: ${NACOS_USERNAME:nacos}
+          password: ${NACOS_PASSWORD:nacos}
+          discovery:
+            enabled: true
+          registry:
+            enabled: true
+        server:
+          enabled: true
+          type: JSONRPC
+          # 显式声明 Nacos 中注册的访问端点；否则框架会自动选第一块非回环网卡，
+          # 本机可能被注册为 192.168.x.x，客户端便不会走预期的本地地址。
+          address: ${HR_A2A_HOST:127.0.0.1}
+          port: ${HR_A2A_PORT:9101}
+          # 能力声明变化时发布新版本，避免客户端构建时取得 Nacos 中的旧 Agent Card。
+          version: 1.0.1
+          card:
+            name: hr-specialist
+            description: 企业人事制度专家
+            url: ${HR_A2A_PUBLIC_URL:http://127.0.0.1:9101/a2a}
+            # 当前 1.1.2.2 的流式远程适配会把 completed 事件解析成空文本；
+            # 本章是一次问答，显式使用稳定的非流式 A2A 响应。
+            capabilities:
+              streaming: false
+            skills:
+              - id: hr-policy-answer
+                name: HR Policy Answer
+                description: 回答年假、考勤等人事制度问题
+                tags: [hr, policy]
+                examples: [公司年假制度是什么？]
+            provider:
+              organization: Size Demo Company
+              url: https://example.com
