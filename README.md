@@ -26,8 +26,61 @@ output/pdf/        # 知识库上传测试 PDF
 | `tag-1.2-2` | 2026-09-08 | `b50aa40` | 将 Chat Memory 改为 MySQL 持久化存储；完成对话记忆前端页面及接口联调。                                          |
 | `tag-1.3`   | 2026-09-10 | `0c09b12` | 完成 Tool Calling 前后端接口联调，支持天气、时间、员工排班、企业制度查询，以及带二次确认的换班申请。            |
 | `tag-1.4`   | 2026-09-12 | `5fe702f` | 完成 RAG 文档上传与知识问答、租户与部门过滤、前端调试页面，以及测试 PDF。                                       |
+| `tag-1.5`   | 2026-09-13 | `93c5a5f` | 完成 ReactAgent 员工助手与对应前端页面，支持按员工、会话隔离上下文及工具调用。                                  |
+| `tag-1.6`   | 2026-09-13 | `7ce25c8` | 完成 Spring AI Alibaba Graph 换班工作流、人工中断与恢复，以及对应前端调试页面。                                 |
+| `tag-1.7`   | 2026-09-14 | `ca21859` | 完成 MCP、Nacos 与 A2A 多模块示例，以及 MCP、A2A 前端调试页面和独立代理配置。                                   |
 
-标签记录的是固定的代码快照。签出标签后会进入 detached HEAD 状态；如果需要在历史版本上继续开发，应从该标签新建分支。
+### 版本分支与标签
+
+当前版本分支的边界如下：
+
+```text
+v-1.0 → 截止 tag-1.6，包含第一阶段核心能力、RAG、ReactAgent 和 Graph
+v-1.1 → 从 v-1.0 继续开发，增加 tag-1.7 的 MCP、Nacos 与 A2A
+main  → 当前最新、完整代码
+```
+
+`v-1.1` 包含 `v-1.0` 的全部历史是正常的：新版本分支从旧版本的最后一个提交创建，然后继续增加新功能。开发下一版本前，应先创建并切换分支，再提交新版本代码：
+
+```bash
+git switch v-1.0
+git switch -c v-1.1
+
+# 修改并验证代码后
+git add .
+git commit -m "MCP Nacos A2A 的整合"
+git push -u github v-1.1
+```
+
+标签是固定代码快照。签出标签会进入 detached HEAD 状态：
+
+```bash
+git switch --detach tag-1.6
+```
+
+如果要在历史版本上继续开发，应基于标签创建新分支：
+
+```bash
+git switch -c feature/from-tag-1.6 tag-1.6
+```
+
+### 为什么签出旧标签后仍可能看到新版本目录
+
+Git 只切换已经纳入版本控制的文件，不会自动删除 `.gitignore` 忽略的构建产物。例如在 `v-1.1` 编译过 `02-mcp-nacos-a2a` 后，其中的 `target/classes`、测试报告等文件会留在本地；签出 `tag-1.6` 时，MCP 源码会消失，但残留的 `target` 目录仍可能被 IDEA 显示。
+
+先预览仅属于 `02-mcp-nacos-a2a` 的忽略文件：
+
+```bash
+git clean -ndX -- 02-mcp-nacos-a2a/
+```
+
+确认输出只有可重新生成的构建产物后，再清理：
+
+```bash
+git clean -fdX -- 02-mcp-nacos-a2a/
+```
+
+也可以在切换版本前进入对应 Maven 项目执行 `mvn clean`。清理后刷新 IDEA 或重新加载 Maven 项目。`github/HEAD` 是远程默认分支的本地符号指针，不是独立版本分支；推荐在 GitHub 将默认分支设置为 `main`，然后执行 `git remote set-head github --auto` 更新本地指向。
 
 ## 启动项目
 
