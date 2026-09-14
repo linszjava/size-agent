@@ -44,6 +44,25 @@ spring:
 app:
   ai:
     system-prompt: 你是一个严谨的中文 AI 助手。回答应准确、简洁；不知道时明确说明不知道。
+    engineering:
+      # AI 请求的统一工程预算，具体客户端和 Agent 仍应设置各自的超时与轮数。
+      request-timeout: ${AI_REQUEST_TIMEOUT:30s}
+      max-input-characters: ${AI_MAX_INPUT_CHARACTERS:4000}
+      max-agent-rounds: ${AI_MAX_AGENT_ROUNDS:8}
+      max-rag-results: ${AI_MAX_RAG_RESULTS:5}
+
+management:
+  endpoints:
+    web:
+      # 只开放必要端点，避免 env、configprops 等端点泄露配置。
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 server:
   port: 8888
