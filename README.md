@@ -6,10 +6,11 @@
 
 ```text
 size-agent/
-└── 01-spring-ai-alibaba-core/
-    ├── backend/    # Spring Boot 后端
-    ├── frontend/   # Vue 3 + TypeScript 前端
-    └── sql/        # MySQL 初始化脚本
+├── 01-spring-ai-alibaba-core/
+│   ├── backend/    # Spring Boot 后端
+│   ├── frontend/   # Vue 3 + TypeScript 前端
+│   └── sql/        # MySQL 初始化脚本
+└── 02-mcp-nacos-a2a/  # MCP、Nacos 与 A2A 多服务示例
 
 output/pdf/        # 知识库上传测试 PDF
 ```
@@ -98,6 +99,10 @@ git clean -fdX -- 02-mcp-nacos-a2a/
 | `REDIS_HOST` / `REDIS_PORT`                       | Redis 地址，默认 `localhost:6379`                       |
 | `REDIS_USERNAME` / `REDIS_PASSWORD`               | Redis 认证信息，须与本地实例一致                        |
 | `REDIS_VECTOR_INDEX` / `REDIS_VECTOR_PREFIX`      | 向量索引与键前缀，默认 `knowledge-index` / `knowledge:` |
+| `AI_REQUEST_TIMEOUT`                              | AI 请求总预算，默认 `30s`                               |
+| `AI_MAX_INPUT_CHARACTERS`                         | 输入字符数上限配置，默认 `4000`                         |
+| `AI_MAX_AGENT_ROUNDS`                             | Agent 最大执行轮数配置，默认 `8`                        |
+| `AI_MAX_RAG_RESULTS`                              | RAG 最大返回数量配置，默认 `5`                          |
 
 具体默认值及模型服务地址见 `backend/src/main/resources/application.yml`。模型名应与配置的百炼服务地址匹配。开发配置启用了数据库表和向量索引初始化。
 
@@ -196,7 +201,61 @@ cd 01-spring-ai-alibaba-core/backend
 mvn test
 ```
 
-当前回归测试覆盖 Redis 权限查询转义、条件分组、权限校验和非法 ID；实际模型与数据库联调需要可用的外部服务。
+当前回归测试覆盖 Redis 权限查询转义、条件分组、权限校验、非法 ID、请求关联 ID 和敏感数据脱敏；实际模型与数据库联调需要可用的外部服务。
+
+## 企业级工程能力
+
+第 13 章在现有后端基础上补充了统一工程预算、请求链路标识、敏感数据脱敏和运行状态观测：
+
+```text
+backend/src/main/java/com/size/
+├── config/
+│   ├── AiEngineeringConfig.java
+│   └── AiEngineeringProperties.java
+├── support/
+│   └── SensitiveDataMasker.java
+└── web/
+    └── RequestCorrelationFilter.java
+```
+
+`AiEngineeringProperties` 统一绑定 `app.ai.engineering` 下的配置，集中保存请求超时、输入长度、Agent 最大轮数和 RAG 最大返回数量。当前这些值提供统一配置入口；具体 ChatClient、Agent、RAG 或外部工具还需要在各自执行位置读取并落实对应限制。
+
+`RequestCorrelationFilter` 会为每次 HTTP 请求建立关联 ID：
+
+- 请求携带合法的 `X-Request-Id` 时沿用该值；
+- 请求未携带或格式不合法时生成新的 32 位 ID；
+- 响应头返回 `X-Request-Id`；
+- 请求处理期间将 ID 写入 MDC，结束后立即清理，避免 Tomcat 线程复用导致串号。
+
+例如：
+
+```bash
+curl -i http://localhost:8888/actuator/health \
+  -H 'X-Request-Id: local-health-check'
+```
+
+响应头中可以看到：
+
+```text
+X-Request-Id: local-health-check
+```
+
+`SensitiveDataMasker` 提供日志写入前的基础脱敏能力，可处理 Bearer Token、JSON 中的 `password`、`apiKey`、`token` 以及中国大陆手机号。它是显式调用的工具类，记录业务日志时应先调用：
+
+```java
+log.info("AI request: {}", SensitiveDataMasker.mask(requestText));
+```
+
+后端已加入 Spring Boot Actuator，并只开放以下端点：
+
+| 端点 | 用途 |
+| --- | --- |
+| `/actuator/health` | 检查应用及依赖健康状态 |
+| `/actuator/info` | 查看应用公开信息 |
+| `/actuator/metrics` | 查看可用指标名称 |
+| `/actuator/metrics/{metricName}` | 查看指定指标 |
+
+健康端点不会返回详细依赖信息，`env`、`configprops` 等可能泄露配置的端点未开放。生产环境仍应在网关或安全配置中限制 Actuator 的访问范围。
 
 ## 员工 Agent 页面
 
